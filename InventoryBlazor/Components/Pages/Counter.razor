@@ -1,0 +1,88 @@
+﻿@page "/counter"
+@rendermode InteractiveServer
+@using InventotyClass
+
+<PageTitle>Counter</PageTitle>
+
+<h1>Counter</h1>
+
+<p role="status">Current count: @currentCount</p>
+
+<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+<nav class="d-flex justify-content-center align-items-center gap-3 mb-3">
+    <ul class="pagination justify-content-center">
+        <li class="page-item ">
+            <button class="page-link" >Anterior</button>
+        </li>
+
+        @for (int i = 1; i <= 5; i++)
+        {
+            <li class="page-item">
+                <button class="page-link" >@i</button>
+            </li>
+        }
+
+        <li class="page-item ">
+            <button class="page-link">Siguiente</button>
+        </li>
+    </ul>
+
+    <p class="text-center">
+        Página paginaActual de totalPaginas
+    </p>
+
+    <div class="mb-3 text-center">
+        <label for="elementosPorPagina">Mostrar:</label>
+        <select id="elementosPorPagina" class="form-select d-inline-block w-auto mx-2"
+                >
+            <option value="5">5</option>
+            <option value="10" selected>10</option>
+            <option value="20">20</option>
+            <option value="50">50</option>
+        </select>
+        elementos por página
+    </div>
+</nav>
+<div class="modal show d-block" tabindex="-1"
+     style="background-color: rgba(0,0,0,0.5); position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1050;">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-Color">
+            <div class="modal-header bg-Color text-white">
+                <h5 class="modal-title">
+                    <i class="Icono me-2"></i>Titulo
+                </h5>
+                <button type="button" class="btn-close btn-close-white" aria-label="Cerrar" onclick="Cerrar"></button>
+                @* <button type="button" class="btn-close btn-close-white" onclick="Cancelar"></button> *@
+            </div>
+
+            <div class="modal-body">
+                <p>Mensaje</p>
+            </div>
+
+            <div class="modal-footer d-flex justify-content-end">
+                <button class="btn btn-Color" onclick="Confirmar">
+                    <i class="Icono me-1"></i>TextoBotonConfirmar
+                </button>
+                <button class="btn btn-secondary" onclick="Cancelar">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+@code {
+    private int currentCount = 0;
+
+    private void IncrementCount()
+    {
+        var suplidores = new PostSuplidores();
+        if (suplidores.NombreEmpresa is null) currentCount++;
+        currentCount++;
+    }
+    
+}

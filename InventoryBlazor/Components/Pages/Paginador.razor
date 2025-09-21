@@ -1,0 +1,67 @@
+@namespace InventoryBlazor.Pagianador
+
+@{
+    int startPage = Math.Max(1, paginaActual - 2);
+    int endPage = Math.Min(totalPaginas, startPage + 4);
+
+    if (endPage > totalPaginas)
+    {
+        endPage = totalPaginas;
+        startPage = Math.Max(1, endPage - 7);
+    }
+}
+
+<ul class="pagination">
+    <!-- Botón Anterior -->
+    <li class="page-item @(paginaActual == 1 ? "disabled" : "")">
+        <button class="page-link" @onclick="PaginaAnterior">Anterior</button>
+    </li>
+
+    <!-- Páginas visibles -->
+    @for (int i = startPage; i <= endPage; i++)
+    {
+        int a = i;
+        <li class="page-item @(paginaActual == i ? "active" : "")">
+            <button class="page-link" @onclick="()=>CambiarPagina(a)">@i</button>
+        </li>
+    }
+
+    <!-- Botón Siguiente -->
+    <li class="page-item @(paginaActual == totalPaginas ? "disabled" : "")">
+        <button class="page-link" @onclick="PaginaSiguiente">Siguiente</button>
+    </li>
+</ul>
+
+
+@code {
+    [Parameter]
+    public int paginaActual { get; set; } = 1;
+    
+    [Parameter]
+    public int totalPaginas { get; set; }
+    
+    [Parameter]
+    public EventCallback<int> OnPaginaAnterior { get; set; }
+    
+    [Parameter]
+    public EventCallback<int> OnPaginaSiguiente { get; set; }
+    
+    [Parameter]
+    public EventCallback<int> OnCambiarPagina { get; set; }
+    
+    private async Task PaginaAnterior()
+    {
+        await OnPaginaAnterior.InvokeAsync(paginaActual);
+    }
+
+    private async Task PaginaSiguiente()
+    {
+        await OnPaginaSiguiente.InvokeAsync(paginaActual);
+    }
+
+    private async Task CambiarPagina(int pagina = 1)
+    {
+        
+        await OnCambiarPagina.InvokeAsync(pagina);
+    }
+}

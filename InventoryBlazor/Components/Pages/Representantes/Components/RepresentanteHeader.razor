@@ -1,0 +1,9 @@
+@namespace InventoryBlazor.Representantes.Components
+@rendermode InteractiveServer
+<div class="d-flex justify-content-between mb-3 mt-3">
+    <CantidadElementos ElementosPorPagina="@ElementosPorPagina"
+                       OnCambiarElementosPorPagina="@OnCambiarElementosPorPagina" />
+    <button class="btn btn-primary btn-sm px-4" @onclick="Crear">
+        <i class="bi bi-plus-circle me-1"></i>Agregar Representante
+    </button>
+</div>

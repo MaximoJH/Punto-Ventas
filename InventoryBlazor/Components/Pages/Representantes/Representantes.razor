@@ -1,0 +1,32 @@
+
+@page "/representantes";
+@namespace Pages.Representantes
+@rendermode InteractiveServer
+
+<RepresentanteHeader 
+    OnCrear="MostrarModalCrear" 
+    ElementosPorPagina="@paginadores.ElementosPorPagina" 
+    OnCambiarElementosPorPagina="@paginadores.CambiarElementosPorPagina" />
+
+<RepresentantesTables
+    RepresentanteList = "@paginadores.DataListPaginado" 
+    OnEditar="@(representante => EditarRepresentante(representante))" 
+    OnEliminar="@(entity => MostrarConfirmacion(entity))" />
+
+<Paginador 
+    paginaActual="@paginadores.PaginaActual"
+    totalPaginas="@paginadores.TotalPaginas"
+    OnPaginaAnterior="@paginadores.PaginaAnterior"
+    OnPaginaSiguiente="@paginadores.PaginaSiguiente"
+    OnCambiarPagina="HandleCambiarPagina" />
+
+@if (modalVisible)
+{
+    <RepresentantesModal
+        TituloModal="@(RepresentanteActual?.RepresentanteId <= 0 ? "Nuevo Representante" : "Editar Representante")"
+        RepresentanteActual="@RepresentanteActual"
+        OnCerrar="@CerrarModal"
+        OnGuardar="@GuardarRepresentante"
+        OnElementoAgregado="ActualizarTabla" />
+}
+

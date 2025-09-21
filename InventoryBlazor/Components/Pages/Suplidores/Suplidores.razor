@@ -1,0 +1,149 @@
+@page "/suplidores"
+@rendermode InteractiveServer
+@using InventotyClass
+@inject HttpClient Http
+
+<h3>Suplidores</h3>
+
+
+<SuplidoresHeader 
+    OnCrear="MostrarModalCrear" 
+    ElementosPorPagina="@paginadores.ElementosPorPagina" 
+    OnCambiarElementosPorPagina="@paginadores.CambiarElementosPorPagina" />
+
+<SuplidoresTabla 
+    Suplidores="@paginadores.DataListPaginado" 
+    OnEditar="@(suplidor => EditarSuplidor(suplidor))" 
+    OnEliminar="@(entity => MostrarConfirmacion(entity))" />
+
+<Paginador 
+    paginaActual="@paginadores.PaginaActual"
+    totalPaginas="@paginadores.TotalPaginas"
+    OnPaginaAnterior="@paginadores.PaginaAnterior"
+    OnPaginaSiguiente="@paginadores.PaginaSiguiente"
+    OnCambiarPagina="HandleCambiarPagina" />
+
+
+@if (modalVisible)
+{
+    <SuplidoresModal 
+        TituloModal="@(suplidorActual?.SuplidorId <= 0 ? "Nuevo Suplidor" : "Editar Suplidor")"
+        SuplidorActual="@suplidorActual"
+        OnCerrar="@CerrarModal"
+        OnGuardar="@GuardarSuplidor" />
+}
+@if (modalConfirmacion)
+{
+    <ConfirmacionModal
+        Titulo="Eliminar registro"
+        Mensaje="¿Deseas eliminar el registro seleccionado? Esta acción no se puede deshacer."
+        TextoBotonConfirmar="Eliminar"
+        Color="danger"
+        Icono="bi bi-trash"
+        OnConfirmar="@EliminarRegistro"
+        OnCancelar="@CerrarConfirmacion" />
+}
+
+
+
+@code {
+    private List<GetAllSuplidores> suplidores = new List<GetAllSuplidores>();
+    private bool modalVisible = false;
+    private GetAllSuplidores suplidorActual = new();
+    private bool modalConfirmacion = false;
+
+    private ChangeStatusSuplidores nuevoEstado = new();
+
+
+    void MostrarModalCrear()
+    {
+        suplidorActual = new();
+        modalVisible = true;
+    } 
+    void MostrarConfirmacion(ChangeStatusSuplidores entity){
+        nuevoEstado = entity;
+        modalConfirmacion = true;
+    }
+    void CerrarModal() => modalVisible = false;
+    void CerrarConfirmacion() => modalConfirmacion = false;
+
+    private async Task EliminarRegistro(){
+        var response = await Http.PatchAsJsonAsync<ChangeStatusSuplidores>("http://localhost:5137/api/Suplidores", nuevoEstado);
+        if (response.IsSuccessStatusCode){
+            var estadoSuplidor = response.Content.ReadFromJsonAsync<ChangeStatusSuplidores>();
+            if (estadoSuplidor != null){
+                var index = paginadores.DataList.FindIndex(s => s.SuplidorId == nuevoEstado?.SuplidorId);
+                paginadores.DataList[index].Estado = nuevoEstado.Estado;
+            }
+       
+        }
+        modalConfirmacion = false;
+    }
+    private Paginadores<GetAllSuplidores> paginadores = new Paginadores<GetAllSuplidores>(new List<GetAllSuplidores>());
+
+    protected override async Task OnInitializedAsync()
+    {
+        suplidores = await Http.GetFromJsonAsync<List<GetAllSuplidores>>("http://localhost:5137/api/Suplidores") ?? new List<GetAllSuplidores>();
+        paginadores = new Paginadores<GetAllSuplidores>(suplidores ??new List<GetAllSuplidores>());
+    }
+    private void HandleCambiarPagina(int pagina)
+    {
+        paginadores.CambiarPaginas(pagina);
+        StateHasChanged(); 
+    }
+    private async Task GuardarSuplidor(PostSuplidores suplidor)
+    {
+        Console.WriteLine(suplidor);
+        Console.WriteLine(suplidorActual);
+
+        if (suplidorActual?.SuplidorId <= 0)
+        {
+            // Crear nuevo suplidor
+            var response = await Http.PostAsJsonAsync("http://localhost:5137/api/suplidores", suplidor);
+            if (response.IsSuccessStatusCode)
+            {
+                var nuevoSuplidor = await response.Content.ReadFromJsonAsync<GetAllSuplidores>();
+                if (nuevoSuplidor != null)
+                {
+                    paginadores.DataList.Add(nuevoSuplidor);
+                }
+
+            }
+        }
+        else
+        {
+            suplidorActual.NombreEmpresa = suplidor.NombreEmpresa;
+            suplidorActual.RNC = suplidor.RNC;
+            suplidorActual.Direccion = suplidor.Direccion;
+            suplidorActual.Telefono = suplidor.Telefono;
+            suplidorActual.Correo = suplidor.Correo;
+            suplidorActual.PaginaWeb = suplidor.PaginaWeb;
+
+            var response = await Http.PutAsJsonAsync("http://localhost:5137/api/suplidores", suplidorActual);
+            if (response.IsSuccessStatusCode)
+            {
+                Console.WriteLine(response.Content.ReadFromJsonAsync<string>());
+                // Buscar y actualizar el suplidor en la lista
+                var index = paginadores.DataList.FindIndex(s => s.SuplidorId == suplidorActual.SuplidorId);
+                if (index != -1)
+                {
+                    @* paginadores.DataList[index] = suplidorActual; *@
+                }
+            }
+        }
+        Console.WriteLine(suplidor);
+        CerrarModal();
+    }
+
+
+    private void EditarSuplidor(GetAllSuplidores suplidor)
+    {
+        Console.WriteLine(suplidor);
+        suplidorActual = suplidor; // Cargar datos existentes
+        modalVisible = true;
+    }
+
+}
+
+
+

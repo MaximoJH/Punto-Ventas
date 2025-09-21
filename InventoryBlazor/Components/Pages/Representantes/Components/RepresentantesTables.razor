@@ -1,0 +1,47 @@
+@namespace InventoryBlazor.Representantes.Components
+@rendermode InteractiveServer
+<div class="table-responsive">
+    <table class="table table-bordered table-hover">
+        <thead class="table-light">
+            <tr>
+                <th><i class="bi bi-building me-1"></i>Nombre</th>
+                <th><i class="bi bi-building me-1"></i>Telefono</th>
+                <th><i class="bi bi-building me-1"></i>Correo</th>
+                <th><i class="bi bi-building me-1"></i>Cargo</th>
+                <th><i class="bi bi-building me-1"></i>Estado</th>
+                <th><i class="bi bi-building me-1"></i>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (GetAllRepresentantes entity in RepresentanteList)
+            {
+                <tr class="align-middle">
+                    <td><a h>@(entity.Nombre +" "+ entity.PremirApellido+" "+ entity.SegundoApellido)</a></td>
+                    <td>@entity.Telefono</td>
+                    <td>@entity.Correo</td>
+                    <td>@entity.Cargo</td>
+                    <td>
+                        <span class="badge @(entity.Estado == true ? "bg-success" : "bg-secondary")">
+                            @(entity.Estado == true ? "Activo" : "Inactivo")
+                        </span>
+                    </td>
+                    <td>
+                        <div class="d-flex justify-content-end gap-2">
+                            <button class="btn btn-outline-warning btn-sm d-flex align-items-center"
+                                    @onclick="() => OnEditar.InvokeAsync(entity)">
+                                <i class="bi bi-pencil-square me-1"></i>
+                                <span class="d-none d-md-inline">Editar</span>
+                            </button>
+                           @* <button class="btn @(suplidor.Estado == "Activo" ? "btn-outline-danger" : "btn-outline-success") btn-sm d-flex align-items-center"
+                                     @onclick="@(() => Eliminar(new ChangeStatusSuplidores { SuplidorId = suplidor.SuplidorId, Estado = suplidor.Estado == "Inactivo" ? "Activo" : "Inactivo" }))">
+                                <i class="bi @(suplidor.Estado == "Activo" ? "bi-trash" : "bi-check-circle") me-1"></i>
+                                <span class="d-none d-md-inline">@(suplidor.Estado == "Activo" ? "Eliminar" : "Habilitar")</span>
+                            </button> *@
+
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

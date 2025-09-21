@@ -1,0 +1,31 @@
+@namespace InventoryBlazor.CantidadElementos
+
+<nav>
+    <div class="text-center">
+        <label for="elementosPorPagina">Mostrar:</label>
+        <select value="@ElementosPorPagina"
+            @onchange="CambiarElementosPorPagina"
+            class="form-select d-inline-block w-auto mx-2">
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="20">20</option>
+            <option value="50">50</option>
+        </select>
+        elementos por página
+    </div>
+</nav>
+
+@code {
+    [Parameter]
+    public int ElementosPorPagina { get; set; } = 10;
+
+    [Parameter]
+    public EventCallback<int> OnCambiarElementosPorPagina { get; set; }
+
+    private async Task CambiarElementosPorPagina(ChangeEventArgs e)
+    {
+        int cantidad = int.Parse(e.Value?.ToString() ?? "10");
+        ElementosPorPagina = cantidad;
+        await OnCambiarElementosPorPagina.InvokeAsync(cantidad);
+    }
+}

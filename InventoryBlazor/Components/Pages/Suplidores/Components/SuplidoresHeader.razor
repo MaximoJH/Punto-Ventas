@@ -1,0 +1,15 @@
+@namespace InventoryBlazor.SuplidoresHeader
+@rendermode InteractiveServer
+<div class="d-flex justify-content-between mb-3 mt-3">
+    <CantidadElementos ElementosPorPagina="@ElementosPorPagina"
+                       OnCambiarElementosPorPagina="@OnCambiarElementosPorPagina" />
+    <button class="btn btn-primary btn-sm px-4" @onclick="OnCrear">
+        <i class="bi bi-plus-circle me-1"></i>Agregar Suplidores
+    </button>
+</div>
+
+@code {
+    [Parameter] public int ElementosPorPagina { get; set; }
+    [Parameter] public EventCallback<int> OnCambiarElementosPorPagina { get; set; }
+    [Parameter] public EventCallback OnCrear { get; set; }
+}

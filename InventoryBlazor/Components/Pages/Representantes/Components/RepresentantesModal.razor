@@ -1,0 +1,57 @@
+@namespace InventoryBlazor.Representantes.Components
+@rendermode InteractiveServer
+<div class="modal show d-block" tabindex="-1"
+     style="background-color: rgba(0,0,0,0.5); position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1050;">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content shadow">
+            <div class="modal-header">
+                <h5 class="modal-title">@TituloModal</h5>
+                <button type="button" class="btn-close" aria-label="Cerrar" @onclick="Cerrar"></button>
+            </div>
+
+            <EditForm Model="@representanteModal" OnValidSubmit="Guardar">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="nombreEmpresa" class="form-label">Nombre</label>
+                            <input type="text" id="nombreEmpresa" class="form-control" @bind="representanteModal.Nombre" />
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="rnc" class="form-label">Primer Apellido</label>
+                            <input type="text" id="rnc" class="form-control" @bind="representanteModal.PremirApellido" />
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="direccion" class="form-label">Segundo Apellido</label>
+                            <input type="text" id="direccion" class="form-control" @bind="representanteModal.SegundoApellido" />
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="telefono" class="form-label">Teléfono</label>
+                            <input type="tel" id="telefono" class="form-control" @bind="representanteModal.Telefono" />
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="correo" class="form-label">Correo</label>
+                            <input type="email" id="correo" class="form-control" @bind="representanteModal.Correo" />
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="paginaWeb" class="form-label">Cargo</label>
+                            <input type="text" id="paginaWeb" class="form-control" @bind="representanteModal.Cargo" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer d-flex justify-content-end">
+                    <button type="submit" class="btn btn-success">Guardar</button>
+                    <button type="button" class="btn btn-secondary" @onclick="Cerrar">Cancelar</button>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+</div>

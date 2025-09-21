@@ -1,0 +1,62 @@
+@namespace InventoryBlazor.SuplidoresTabla
+@rendermode InteractiveServer
+<div class="table-responsive">
+    <table class="table table-bordered table-hover">
+        <thead class="table-light">
+            <tr>
+                <th><i class="bi bi-building me-1"></i>Empresa</th>
+                <th><i class="bi bi-telephone me-1"></i>Teléfono</th>
+                <th><i class="bi bi-envelope me-1"></i>Correo</th>
+                <th><i class="bi bi-globe me-1"></i>Web</th>
+                <th><i class="bi bi-check-circle me-1"></i>Estado</th>
+                <th><i class="bi bi-gear me-1"></i>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var suplidor in Suplidores)
+            {
+                <tr class="align-middle">
+                    <td><a h>@suplidor.NombreEmpresa</a></td>
+                    <td>@suplidor.Telefono</td>
+                    <td>@suplidor.Correo</td>
+                    <td>
+                        <a href="@suplidor.PaginaWeb" target="_blank" class="text-decoration-none">
+                            @suplidor.PaginaWeb
+                        </a>
+                    </td>
+                    <td>
+                        <span class="badge @(suplidor.Estado == "Activo" ? "bg-success" : "bg-secondary")">
+                            @suplidor.Estado
+                        </span>
+                    </td>
+                    <td>
+                        <div class="d-flex justify-content-end gap-2">
+                            <button class="btn btn-outline-warning btn-sm d-flex align-items-center"
+                                    @onclick="() => OnEditar.InvokeAsync(suplidor)">
+                                <i class="bi bi-pencil-square me-1"></i>
+                                <span class="d-none d-md-inline">Editar</span>
+                            </button>
+                           <button class="btn @(suplidor.Estado == "Activo" ? "btn-outline-danger" : "btn-outline-success") btn-sm d-flex align-items-center"
+                                     @onclick="@(() => Eliminar(new ChangeStatusSuplidores { SuplidorId = suplidor.SuplidorId, Estado = suplidor.Estado == "Inactivo" ? "Activo" : "Inactivo" }))">
+                                <i class="bi @(suplidor.Estado == "Activo" ? "bi-trash" : "bi-check-circle") me-1"></i>
+                                <span class="d-none d-md-inline">@(suplidor.Estado == "Activo" ? "Eliminar" : "Habilitar")</span>
+                            </button>
+
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    [Parameter] public IEnumerable<GetAllSuplidores> Suplidores { get; set; } = new List<GetAllSuplidores>();
+    [Parameter] public EventCallback<GetAllSuplidores> OnEditar { get; set; }
+    [Parameter] public EventCallback<ChangeStatusSuplidores> OnEliminar { get; set; }
+    private async Task Eliminar(ChangeStatusSuplidores entity){
+        await OnEliminar.InvokeAsync(entity);
+        
+        @* (() => MostrarConfirmacion(new ChangeStatusSuplidores { SuplidorId = suplidor.SuplidorId, Estado = "Inactivo" }))" *@
+    }
+}
