@@ -33,7 +33,7 @@ namespace Pages.Representantes
         }
         protected void EditarRepresentante(GetAllRepresentantes representante)
         {
-            Console.WriteLine(representante);
+            // Console.WriteLine(representante);
             RepresentanteActual = representante; // Cargar datos existentes
             modalVisible = true;
         }
@@ -49,25 +49,30 @@ namespace Pages.Representantes
         }
         private async Task GuardarRepresentante(PostRepresentantes representante)
         {
-             Console.WriteLine(representante);
-             Console.WriteLine(RepresentanteActual);
+            //  Console.WriteLine(representante.);
+             Console.WriteLine(RepresentanteActual.RepresentanteId);
 
-            if (RepresentanteActual?.RepresentanteId <= 0)
+            if (RepresentanteActual?.RepresentanteId < 1)
             {
                 // Crear nuevo Representante
                 var response = await Http.PostAsJsonAsync("http://localhost:5137/api/Representantes", representante);
+                Console.WriteLine(response.IsSuccessStatusCode);
+                var content = await response.Content.ReadAsStringAsync();
+                Console.WriteLine(content); 
                 if (response.IsSuccessStatusCode)
                 {
                     var nuevo = await response.Content.ReadFromJsonAsync<GetAllRepresentantes>();
+                    Console.WriteLine("Nuevo", nuevo?.RepresentanteId);
+                    Console.WriteLine("Nuevo", nuevo);
                     if (nuevo != null)
                     {
-                        paginadores.DataList.Add(nuevo);
-                        Console.WriteLine(paginadores.DataListPaginado);
-                        // paginadores.DataList.Insert(0, nuevo);
+                        // paginadores.DataList.Add(nuevo);
+                        Console.WriteLine("estoy aqui");
+                        // Console.WriteLine(paginadores.DataListPaginado);
+                        paginadores.DataList.Insert(0, nuevo);
                         // paginadores.CambiarPaginas(2);
                         // StateHasChanged();
                     }
-
                 }
             }
             else
@@ -84,18 +89,18 @@ namespace Pages.Representantes
                     var response = await Http.PutAsJsonAsync("http://localhost:5137/api/Representantes", RepresentanteActual);
                     if (response.IsSuccessStatusCode)
                     {
-                        Console.WriteLine(response.Content.ReadFromJsonAsync<string>());
+                        // Console.WriteLine(response.Content.ReadFromJsonAsync<string>());
                         // Buscar y actualizar el suplidor en la lista
                         var index = paginadores.DataList.FindIndex(s => s.RepresentanteId == RepresentanteActual.RepresentanteId);
                         if (index != -1)
                         {
-                            // @* paginadores.DataList[index] = RepresentanteActual; *@
+                            paginadores.DataList[index] = RepresentanteActual; 
                         }
                     }
                 }
-                StateHasChanged();
+                // StateHasChanged();
             }
-            Console.WriteLine(representante);
+            // Console.WriteLine(representante);
             StateHasChanged();
             CerrarModal();
         }

@@ -36,7 +36,7 @@ namespace Inventorys.Controllers
                 await _context.SaveChangesAsync();
                 var representante = await _context.Representantes
                 .FirstOrDefaultAsync(s => s.Nombre == newRepresentante.Nombre && s.Estado == true);
-                return Ok(result);
+                return Ok(_mapper.Map<GetAllRepresentantes>(representante));
             }
             catch (Exception ex)
             {
